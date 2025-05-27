@@ -1,0 +1,22 @@
+services:
+  db:
+    container_name: postgres-satellara
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: willslogan
+      POSTGRES_PASSWORD: 8D7MWE2yXO4Q2z0ZhUz
+      PGDATA: /data/postgres
+    volumes:
+      - db:/data/postgres
+    ports:
+      - "5332:5432"
+    networks:
+      - db
+    restart: unless-stopped
+
+networks:
+  db:
+    driver: bridge
+
+volumes:
+  db:

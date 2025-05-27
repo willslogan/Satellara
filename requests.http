@@ -1,0 +1,27 @@
+### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=IntelliJ IDEA
+
+
+### GET request to example server
+GET http://localhost:8080/api/satellite/information/all
+
+### GET request to example server
+GET http://localhost:8080/api/satellite/information/00
+
+### Send POST request with json body
+POST http://localhost:8080/api/satellite/information
+Content-Type: application/json
+
+{
+  "norad_id": 44824
+}
+
+### GET request to example server
+GET http://localhost:8080/api/satellite/location/all
+
+### Send POST request with json body
+POST http://localhost:8080/api/satellite/tle/generate
+
+### GET request to example server
+GET http://localhost:8080/api/satellite/location/current
