@@ -49,6 +49,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<ErrorResponse>(e, HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(CountryCodeNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleCountryCodeNotFoundException(CountryCodeNotFoundException ex) {
+        ErrorResponse e = new ErrorResponse(ex.getErrorType(), ex.getMessage());
+        return new ResponseEntity<ErrorResponse>(e, HttpStatus.NOT_FOUND);
+    }
     // Record for Error Responses
     public record ErrorResponse(ErrorType type, String message) {
     }

@@ -17,16 +17,6 @@ public class SatelliteInformationService {
         this.satelliteInformationRepository = satelliteInformationRepository;
     }
 
-    public List<SatelliteInformation> getAllSatelliteInformation() {
-        return satelliteInformationRepository.findAll();
-    }
-
-    public void insertNewSatelliteInformation(SatelliteInformation satelliteInformation) {
-        if(satelliteInformationRepository.existsById(satelliteInformation.getNorad_id()))
-            throw new SatelliteInformationException(ErrorType.ALREADY_EXISTS, "Satellite information already exists");
-        satelliteInformationRepository.save(satelliteInformation);
-    }
-
     public SatelliteInformation getSatelliteInformationByNoradId(Integer id) {
         return satelliteInformationRepository.findById(id)
                 .orElseThrow(() -> new SatelliteInformationException(ErrorType.NOT_FOUND, "Satellite for norad id: " + id + " not found"));

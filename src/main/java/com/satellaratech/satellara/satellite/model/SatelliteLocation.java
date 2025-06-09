@@ -17,6 +17,8 @@ public class SatelliteLocation {
     @Id
     private ZonedDateTime time;
 
+    private String name;
+
     @Column(nullable = false)
     private Double x;
 
@@ -26,9 +28,10 @@ public class SatelliteLocation {
     @Column(nullable = false)
     private Double z;
 
-    public SatelliteLocation(Integer norad_id, ZonedDateTime time, Double x, Double y, Double z) {
+    public SatelliteLocation(Integer norad_id, ZonedDateTime time, String name, Double x, Double y, Double z) {
         this.norad_id = norad_id;
         this.time = time;
+        this.name = name;
         this.x = x;
         this.y = y;
         this.z = z;
@@ -51,6 +54,14 @@ public class SatelliteLocation {
 
     public void setTime(ZonedDateTime time) {
         this.time = time;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Double getX() {

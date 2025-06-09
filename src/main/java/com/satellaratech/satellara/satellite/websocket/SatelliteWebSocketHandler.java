@@ -15,8 +15,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
@@ -44,11 +43,13 @@ public class SatelliteWebSocketHandler extends TextWebSocketHandler {
     }
 
     public void broadcastCoordinates() {
+        if(sessions.isEmpty()) return;
         List<SatelliteLocation> coordinates = satelliteLocationService.getCurrentCoordinates();
         System.out.println("Sending payload "+ coordinates.size());
 
         try {
-            String payload = mapper.writeValueAsString(coordinates);
+
+            String payload = convertToCZML(coordinates);
             for (WebSocketSession session : sessions) {
                 System.out.println("Session found: " + session.toString());
                 if (session.isOpen()) {
@@ -65,6 +66,36 @@ public class SatelliteWebSocketHandler extends TextWebSocketHandler {
             System.out.println("Error while sending payload2");
             throw new SatelliteLocationException(ErrorType.IO_EXCEPTION, "Issue with sending coordinates through websocket");
         }
+    }
+
+    public String convertToCZML(List<SatelliteLocation> coordinates) {
+        List<Object> czml = new LinkedList<>();
+        Map<String, Object> czmlHeader = new HashMap<>();
+        czmlHeader.put("id", "document");
+        czmlHeader.put("version", "1.0");
+        czml.add(czmlHeader);
+
+        for (SatelliteLocation location : coordinates) {
+            Map<String, Object> satellite = new HashMap<>();
+            satellite.put("id", location.getNorad_id());
+            satellite.put("name", location.getName());
+            Map<String, Object> position = new HashMap<>();
+            position.put("cartesian", new Double[]{location.getX(), location.getY(), location.getZ()});
+            satellite.put("position", position);
+            Map<String, Object> graphics = new HashMap<>();
+            graphics.put("pixelSize", 3);
+            satellite.put("point",graphics);
+            czml.add(satellite);
+        }
+
+        String czmlFileContents;
+        try {
+            czmlFileContents = mapper.writeValueAsString(czml);
+        } catch (JsonProcessingException e) {
+            czmlFileContents = "[]";
+        }
+        return czmlFileContents;
+
     }
 
 

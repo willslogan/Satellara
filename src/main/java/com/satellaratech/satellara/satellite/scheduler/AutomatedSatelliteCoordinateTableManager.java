@@ -117,7 +117,7 @@ public class AutomatedSatelliteCoordinateTableManager {
         }
     }
 
-//    @Scheduled(cron = "*/59 * * * * *")
+//    @Scheduled(cron = "*/10 * * * * *")
     @Scheduled(cron = "0 2,17,32,47 * * * *")
     public void calculateITRSCoordinates() {
         System.out.println("Calculating Coordinates now");

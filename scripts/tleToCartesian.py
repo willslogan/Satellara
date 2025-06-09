@@ -1,4 +1,5 @@
 from concurrent.futures import ProcessPoolExecutor
+import math
 import os
 from sgp4.api import Satrec
 import json
@@ -38,10 +39,10 @@ def main():
     tle_list = convert_to_list()
 
     # add time to the list of coordinates
-    args_list = [(norad_id, line1, line2, start_time, interval_minute, step_seconds) for (norad_id, line1, line2) in tle_list]
+    args_list = [(norad_id, name, line1, line2, start_time, interval_minute, step_seconds) for (norad_id, name, line1, line2) in tle_list]
 
     # Begin calculating coordinates and storing them in a results list
-    with ProcessPoolExecutor() as executor:
+    with ProcessPoolExecutor(max_workers=5) as executor:
         results = list(executor.map(calculate_coords_itrs, args_list))
     
     # # Place the coordinates into a file
@@ -72,13 +73,13 @@ def insert_to_database(results, start_time):
     # Write all the points to the buffer
     for satellite_points in results:
         for coordinate in satellite_points:
-            buffer.write(f"{coordinate['norad_id']}\t{coordinate['time']}\t{coordinate['x']}\t{coordinate['y']}\t{coordinate['z']}\n")
+            buffer.write(f"{coordinate['norad_id']}\t{coordinate['name']}\t{coordinate['time']}\t{coordinate['x']}\t{coordinate['y']}\t{coordinate['z']}\n")
     
     # Start at the beginning of the buffer
     buffer.seek(0)
 
     # Insert coordinate points in the database at correct partition
-    cursor.copy_from(buffer, "satellite_location_" + start_time.strftime("%Y_%m%d_%H%M"), columns=('norad_id', 'time', 'x', 'y', 'z'))
+    cursor.copy_from(buffer, "satellite_location_" + start_time.strftime("%Y_%m%d_%H%M"), columns=('norad_id', 'name', 'time', 'x', 'y', 'z'))
     conn.commit()
 
     # Close the connection once finished
@@ -87,7 +88,7 @@ def insert_to_database(results, start_time):
 
 def calculate_coords_itrs(args):
     # Extract data from argument list
-    norad_id, line1, line2, start_time, interval_minute, step_seconds = args
+    norad_id, name, line1, line2, start_time, interval_minute, step_seconds = args
 
     # list of coordinates for an individual satellite
     coordinates_list = []
@@ -122,14 +123,17 @@ def calculate_coords_itrs(args):
             # Format data for json
             satellitedata = {
                 "norad_id" : norad_id,
+                "name" : name,
                 "time" : t.utc_iso(),
                 "x" : itrscoordInMeters[0],
                 "y" : itrscoordInMeters[1],
                 "z" : itrscoordInMeters[2]
             }
 
-            # add calculated coordinate to coordinate list
-            coordinates_list.append(satellitedata)
+            # add calculated coordinate to coordinate list if not decayed
+            satelliteDecayed = math.isnan(itrscoordInMeters[0]) or math.isnan(itrscoordInMeters[1]) or math.isnan(itrscoordInMeters[2])
+            if not satelliteDecayed:
+                coordinates_list.append(satellitedata)
         return coordinates_list
     except Exception as e:
         return json.dumps({
@@ -162,7 +166,7 @@ def convert_to_list():
                 #Something is wrong with the data
                 break
             norad_id = int(line2.split()[1])
-            tle_list.append((norad_id, line1, line2))
+            tle_list.append((norad_id, name, line1, line2))
     return tle_list
 
 if __name__ == "__main__":
