@@ -2,8 +2,10 @@ package com.satellaratech.satellara.satellite.scheduler;
 
 import com.satellaratech.satellara.satellite.model.CountryOrgIdentifier;
 import com.satellaratech.satellara.satellite.service.CountryOrgIdentifierService;
+import jakarta.annotation.PostConstruct;
 import org.postgresql.copy.CopyManager;
 import org.postgresql.core.BaseConnection;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -22,6 +24,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Component
+@DependsOn("tableManager")
 public class SatelliteInfoScheduler {
 
     private final JdbcTemplate jdbcTemplate;
@@ -60,12 +63,15 @@ public class SatelliteInfoScheduler {
     public SatelliteInfoScheduler(JdbcTemplate jdbcTemplate, CountryOrgIdentifierService countryOrgIdentifierService) {
         this.jdbcTemplate = jdbcTemplate;
         this.countryOrgIdentifierService = countryOrgIdentifierService;
+    }
+
+    @PostConstruct
+    public void init() {
         refreshCountryCodes();
     }
 
 
     @Scheduled(cron = "0 0 7 * * *")
-//    @Scheduled(cron = "*/10 * * * * *")
     public void refreshCountryCodes() {
         String rawCountryCodeTsvData = obtainTsvFile("https://planet4589.org/space/gcat/tsv/tables/orgs.tsv");
 
@@ -96,8 +102,9 @@ public class SatelliteInfoScheduler {
             copyManager.copyIn("COPY country_org_identifier (code, statec, english_name) FROM STDIN WITH (FORMAT text, DELIMITER E'\\t')", new StringReader(formattedTsv));
             List<CountryOrgIdentifier> allCountryOrgs = countryOrgIdentifierService.getAllCountryOrgs();
             countryOrgIdentifierMap = allCountryOrgs.stream().collect(Collectors.toMap(CountryOrgIdentifier::getCode, countryOrgIdentifier -> countryOrgIdentifier));
+            System.out.println("Countries updated: Success");
             updateSatelliteInfo();
-            System.out.println("Success");
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (SQLException e) {
@@ -137,7 +144,7 @@ public class SatelliteInfoScheduler {
         try (Connection conn = jdbcTemplate.getDataSource().getConnection()) {
             CopyManager copyManager = new CopyManager(conn.unwrap(BaseConnection.class));
             copyManager.copyIn("COPY satellite_information (norad_id, name, launchdate, country, category) FROM STDIN WITH (FORMAT text, DELIMITER E'\\t')", new StringReader(formattedTsv));
-            System.out.println("Success");
+            System.out.println("Updating satellite info Success");
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (SQLException e) {
@@ -269,5 +276,7 @@ public class SatelliteInfoScheduler {
         }
         return stateOrg.getEnglishName();
     }
+
+
 
 }

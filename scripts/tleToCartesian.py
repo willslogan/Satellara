@@ -33,6 +33,12 @@ def main():
 
     # Want to obtain coordinates for 15 minute intervals
     currtime = datetime.now(timezone.utc)
+    
+    # cold start we want to calculate the current time and round to interval function adds 15 minutes to current time
+    if len(sys.argv) > 3:
+        print("here")
+        currtime = currtime - timedelta(minutes=interval_minute)
+
     start_time = round_to_the_Interval_minute(currtime)
 
     # Convert tledata from .txt file to list so multithreading can be done
@@ -41,8 +47,10 @@ def main():
     # add time to the list of coordinates
     args_list = [(norad_id, name, line1, line2, start_time, interval_minute, step_seconds) for (norad_id, name, line1, line2) in tle_list]
 
+    workers = os.cpu_count() - 2
+
     # Begin calculating coordinates and storing them in a results list
-    with ProcessPoolExecutor(max_workers=5) as executor:
+    with ProcessPoolExecutor(max_workers=workers) as executor:
         results = list(executor.map(calculate_coords_itrs, args_list))
     
     # # Place the coordinates into a file
@@ -92,7 +100,6 @@ def calculate_coords_itrs(args):
 
     # list of coordinates for an individual satellite
     coordinates_list = []
-    
     
     try:
         # needed variable for satellite coordinate calculation
