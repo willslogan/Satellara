@@ -21,4 +21,12 @@ public class SatelliteInformationService {
         return satelliteInformationRepository.findById(id)
                 .orElseThrow(() -> new SatelliteInformationException(ErrorType.NOT_FOUND, "Satellite for norad id: " + id + " not found"));
     }
+
+    public List<SatelliteInformation> getAllSatelliteInformation() {
+        return satelliteInformationRepository.findAll();
+    }
+
+    public void updateAllSatelliteInformation(List<SatelliteInformation> satelliteInformationList) {
+        satelliteInformationRepository.saveAll(satelliteInformationList);
+    }
 }

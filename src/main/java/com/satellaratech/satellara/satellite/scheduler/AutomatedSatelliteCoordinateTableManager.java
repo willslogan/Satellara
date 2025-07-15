@@ -182,7 +182,7 @@ public class AutomatedSatelliteCoordinateTableManager {
         String cleanedTleData = formatTleData(tleData);
 
         // Get rid of old tle data and recreate table
-        String sqlQuery = "create table satellite_tle (norad_id integer not null, tle_s varchar(255), tle_t varchar(255), primary key (norad_id))";
+        String sqlQuery = "create table satellite_tle (norad_id integer not null, name varchar(255), tle_s varchar(255), tle_t varchar(255), primary key (norad_id))";
         jdbcTemplate.execute("DROP TABLE IF EXISTS satellite_tle");
         jdbcTemplate.execute(sqlQuery);
 
@@ -194,7 +194,7 @@ public class AutomatedSatelliteCoordinateTableManager {
             InputStream tleStream = new ByteArrayInputStream(cleanedTleData.getBytes(StandardCharsets.UTF_8));
 
             // Update table with new tle information
-            copyManager.copyIn("COPY satellite_tle (norad_id, tle_s, tle_t) FROM STDIN WITH (FORMAT csv)", tleStream);
+            copyManager.copyIn("COPY satellite_tle (norad_id, name, tle_s, tle_t) FROM STDIN WITH (FORMAT csv)", tleStream);
 
             System.out.println("Satellite tle copied successfully");
         } catch (IOException e) {
@@ -209,14 +209,11 @@ public class AutomatedSatelliteCoordinateTableManager {
         StringBuilder sb = new StringBuilder();
         String[] lines = tleData.split("\n");
         for (int i = 0; i < lines.length; i += 3) {
-            String name = lines[i];
+            String name = lines[i].trim();
             String line1 = lines[i + 1].trim();
             String line2 = lines[i + 2].trim();
             String noradId = line2.split("\\s+")[1];
-
-            // what?
-
-            sb.append(String.join(",", noradId, line1, line2));
+            sb.append(String.join(",", noradId, name, line1, line2));
             sb.append("\n");
         }
         return sb.toString();

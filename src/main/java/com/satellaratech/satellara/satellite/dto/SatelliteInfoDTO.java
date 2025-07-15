@@ -1,14 +1,8 @@
-package com.satellaratech.satellara.satellite.model;
+package com.satellaratech.satellara.satellite.dto;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-
-@Entity
-public class SatelliteInformation {
-
-    @Id
+public class SatelliteInfoDTO {
     private Integer norad_id;
-    private String launchdate;
+    private String launch_date;
     private String country;
     private String mass;
     private String length;
@@ -16,9 +10,9 @@ public class SatelliteInformation {
     private String orbitType;
     private String category;
 
-    public SatelliteInformation(Integer norad_id, String launchdate, String country, String mass, String length, String span, String orbitType, String category) {
+    public SatelliteInfoDTO(Integer norad_id, String launch_date, String country, String mass, String length, String span, String orbitType, String category) {
         this.norad_id = norad_id;
-        this.launchdate = launchdate;
+        this.launch_date = launch_date;
         this.country = country;
         this.mass = mass;
         this.length = length;
@@ -27,7 +21,7 @@ public class SatelliteInformation {
         this.category = category;
     }
 
-    public SatelliteInformation() {
+    public SatelliteInfoDTO() {
     }
 
     public Integer getNorad_id() {
@@ -38,12 +32,12 @@ public class SatelliteInformation {
         this.norad_id = norad_id;
     }
 
-    public String getLaunchdate() {
-        return launchdate;
+    public String getLaunch_date() {
+        return launch_date;
     }
 
-    public void setLaunchdate(String launchdate) {
-        this.launchdate = launchdate;
+    public void setLaunch_date(String launch_date) {
+        this.launch_date = launch_date;
     }
 
     public String getCountry() {
@@ -92,5 +86,9 @@ public class SatelliteInformation {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public String toString() {
+        return norad_id + ", " + launch_date + ", " + country + ", " + mass + ", " + length + ", " + span + ", " + category + ", " + orbitType;
     }
 }

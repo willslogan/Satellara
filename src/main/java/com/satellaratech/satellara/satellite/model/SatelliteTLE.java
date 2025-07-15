@@ -9,13 +9,15 @@ import jakarta.persistence.Table;
 public class SatelliteTLE {
     @Id
     private Integer norad_id;
+    private String name;
     private String tle_s;
     private String tle_t;
 
-    public SatelliteTLE(String tle_s, String tle_t, Integer norad_id) {
+    public SatelliteTLE(Integer norad_id, String name, String tle_s, String tle_t) {
+        this.norad_id = norad_id;
+        this.name = name;
         this.tle_s = tle_s;
         this.tle_t = tle_t;
-        this.norad_id = norad_id;
     }
 
     public SatelliteTLE() {
@@ -27,6 +29,14 @@ public class SatelliteTLE {
 
     public void setNorad_id(Integer norad_id) {
         this.norad_id = norad_id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getTle_s() {

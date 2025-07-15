@@ -6,10 +6,7 @@ import com.satellaratech.satellara.satellite.model.SatelliteTLE;
 import com.satellaratech.satellara.satellite.repository.SatelliteTLERepository;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
-import java.io.IOException;
+import java.util.List;
 
 @Service
 public class SatelliteTLEService {
@@ -27,5 +24,9 @@ public class SatelliteTLEService {
 
     public SatelliteTLE getTleForId(Integer id) {
         return satelliteTLERepository.findById(id).orElseThrow(() -> new SatelliteTLEException(ErrorType.NOT_FOUND, "Satellite TLE with id " + id + " not found"));
+    }
+
+    public List<SatelliteTLE> getAllTles() {
+        return satelliteTLERepository.findAll();
     }
 }
