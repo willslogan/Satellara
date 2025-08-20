@@ -29,4 +29,8 @@ public class SatelliteTLEService {
     public List<SatelliteTLE> getAllTles() {
         return satelliteTLERepository.findAll();
     }
+
+    public List<SatelliteTLE> getTleForIds(List<Integer> noradIds) {
+        return satelliteTLERepository.findAllById(noradIds);
+    }
 }

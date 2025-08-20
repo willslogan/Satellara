@@ -7,6 +7,8 @@ import com.satellaratech.satellara.satellite.repository.SatelliteInformationRepo
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class SatelliteInformationService {
@@ -28,5 +30,80 @@ public class SatelliteInformationService {
 
     public void updateAllSatelliteInformation(List<SatelliteInformation> satelliteInformationList) {
         satelliteInformationRepository.saveAll(satelliteInformationList);
+    }
+
+    public List<SatelliteInformation> getSatelliteInformationUS() {
+        return satelliteInformationRepository.findByCountryContaining("United States of America");
+    }
+
+    public List<SatelliteInformation> getSatelliteInformationUSLeo() {
+        List<SatelliteInformation> satelliteInformationList = getSatelliteInformationUS();
+        return satelliteInformationList.stream()
+                .filter(sat -> Objects.equals(sat.getOrbitType(), "LEO"))
+                .collect(Collectors.toList());
+    }
+
+    public List<SatelliteInformation> getSatelliteInformationUSMeo() {
+        List<SatelliteInformation> satelliteInformationList = getSatelliteInformationUS();
+        return satelliteInformationList.stream()
+                .filter(sat -> Objects.equals(sat.getOrbitType(), "MEO"))
+                .collect(Collectors.toList());
+    }
+
+    public List<SatelliteInformation> getSatelliteInformationUSGeo() {
+        List<SatelliteInformation> satelliteInformationList = getSatelliteInformationUS();
+        return satelliteInformationList.stream()
+                .filter(sat -> Objects.equals(sat.getOrbitType(), "GEO"))
+                .collect(Collectors.toList());
+    }
+
+    public List<SatelliteInformation> getSatelliteInformationRussia() {
+        return satelliteInformationRepository.findByCountryContaining("Russia");
+    }
+
+    public List<SatelliteInformation> getSatelliteInformationRussiaLeo() {
+        List<SatelliteInformation> satelliteInformationList = getSatelliteInformationRussia();
+        return satelliteInformationList.stream()
+                .filter(sat -> Objects.equals(sat.getOrbitType(), "LEO"))
+                .collect(Collectors.toList());
+    }
+
+    public List<SatelliteInformation> getSatelliteInformationRussiaMeo() {
+        List<SatelliteInformation> satelliteInformationList = getSatelliteInformationRussia();
+        return satelliteInformationList.stream()
+                .filter(sat -> Objects.equals(sat.getOrbitType(), "MEO"))
+                .collect(Collectors.toList());
+    }
+
+    public List<SatelliteInformation> getSatelliteInformationRussiaGeo() {
+        List<SatelliteInformation> satelliteInformationList = getSatelliteInformationRussia();
+        return satelliteInformationList.stream()
+                .filter(sat -> Objects.equals(sat.getOrbitType(), "GEO"))
+                .collect(Collectors.toList());
+    }
+
+    public List<SatelliteInformation> getSatelliteInformationChina() {
+        return satelliteInformationRepository.findByCountryContaining("China");
+    }
+
+    public List<SatelliteInformation> getSatelliteInformationChinaLeo() {
+        List<SatelliteInformation> satelliteInformationList = getSatelliteInformationChina();
+        return satelliteInformationList.stream()
+                .filter(sat -> Objects.equals(sat.getOrbitType(), "LEO"))
+                .collect(Collectors.toList());
+    }
+
+    public List<SatelliteInformation> getSatelliteInformationChinaMeo() {
+        List<SatelliteInformation> satelliteInformationList = getSatelliteInformationChina();
+        return satelliteInformationList.stream()
+                .filter(sat -> Objects.equals(sat.getOrbitType(), "MEO"))
+                .collect(Collectors.toList());
+    }
+
+    public List<SatelliteInformation> getSatelliteInformationChinaGeo() {
+        List<SatelliteInformation> satelliteInformationList = getSatelliteInformationChina();
+        return satelliteInformationList.stream()
+                .filter(sat -> Objects.equals(sat.getOrbitType(), "GEO"))
+                .collect(Collectors.toList());
     }
 }

@@ -25,3 +25,6 @@ POST http://localhost:8080/api/satellite/tle/generate
 
 ### GET request to example server
 GET http://localhost:8080/api/satellite/location/current
+
+### Get request
+GET http://localhost:8080/api/satellite/information/china

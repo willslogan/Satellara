@@ -266,10 +266,10 @@ public class SatelliteInfoScheduler {
         Map<Integer, SatelliteInfoDTO> activecat = getSatelliteInfoFromActiveCat();
 
         for (SatelliteInformation satelliteInformation : satelliteInformationList) {
-            mergeInfo(satelliteInformation, satcat.get(satelliteInformation.getNorad_id()));
             mergeInfo(satelliteInformation, psatcat.get(satelliteInformation.getNorad_id()));
             mergeInfo(satelliteInformation, currentcat.get(satelliteInformation.getNorad_id()));
             mergeInfo(satelliteInformation, activecat.get(satelliteInformation.getNorad_id()));
+            mergeInfo(satelliteInformation, satcat.get(satelliteInformation.getNorad_id()));
         }
 
         satelliteInformationService.updateAllSatelliteInformation(satelliteInformationList);
@@ -318,7 +318,6 @@ public class SatelliteInfoScheduler {
 
             // -----------------------------------------------
 
-
             // Add to the satelliteInfoDTOs map
             satcatmap.put(noradId, satelliteInfoDTO);
         }
@@ -357,7 +356,6 @@ public class SatelliteInfoScheduler {
 
             // OpOrbit
             satelliteInfoDTO.setOrbitType(orbitTypeFormatted(cells[22]));
-
             // -------------------------------------------------
 
             currentcatmap.put(noradId, satelliteInfoDTO);

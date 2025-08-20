@@ -23,5 +23,4 @@ public class SatelliteLocationController {
     public List<SatelliteLocation> getSatelliteLocations() {
         return satelliteLocationService.getCurrentCoordinates();
     }
-
 }
