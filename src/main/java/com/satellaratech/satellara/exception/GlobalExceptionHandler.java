@@ -33,7 +33,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(SatelliteTLEException.class)
-    public ResponseEntity<ErrorResponse> handleException(SatelliteTLEException ex) {
+    public ResponseEntity<ErrorResponse> handleSatelliteTLEException(SatelliteTLEException ex) {
         //Generate error response record
         ErrorResponse e = new ErrorResponse(ex.getErrorType(), ex.getMessage());
 
@@ -54,6 +54,22 @@ public class GlobalExceptionHandler {
         ErrorResponse e = new ErrorResponse(ex.getErrorType(), ex.getMessage());
         return new ResponseEntity<ErrorResponse>(e, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(UserException.class)
+    public ResponseEntity<ErrorResponse> handleUserException(UserException ex) {
+        ErrorResponse e = new ErrorResponse(ex.getErrorType(), ex.getMessage());
+
+        return new ResponseEntity<ErrorResponse>(e, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(SatelliteGroupException.class)
+    public ResponseEntity<ErrorResponse> handleSatelliteGroupException(SatelliteGroupException ex) {
+        ErrorResponse e = new ErrorResponse(ex.getErrorType(), ex.getMessage());
+
+        return new ResponseEntity<ErrorResponse>(e, HttpStatus.NOT_FOUND);
+    }
+
+
     // Record for Error Responses
     public record ErrorResponse(ErrorType type, String message) {
     }

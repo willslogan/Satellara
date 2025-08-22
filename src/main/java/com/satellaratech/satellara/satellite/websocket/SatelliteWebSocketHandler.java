@@ -45,19 +45,15 @@ public class SatelliteWebSocketHandler extends TextWebSocketHandler {
     public void broadcastCoordinates() {
         if(sessions.isEmpty()) return;
         List<SatelliteLocation> coordinates = satelliteLocationService.getCurrentCoordinates();
-        System.out.println("Sending payload "+ coordinates.size());
 
         try {
 
             String payload = convertToCZML(coordinates);
             for (WebSocketSession session : sessions) {
-                System.out.println("Session found: " + session.toString());
                 if (session.isOpen()) {
-                    System.out.println("Sending to session: " + session.toString());
                     session.sendMessage(new TextMessage(payload));
                 }
             }
-            System.out.println("Done sending payload ");
 
         } catch (JsonProcessingException e) {
             System.out.println("Error while sending payload1" + e.getMessage());

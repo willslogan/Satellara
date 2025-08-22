@@ -26,7 +26,6 @@ public class SatelliteLocationService {
 
         int currSecond = zonedDateTime.getSecond();
         int seconds = (currSecond / stepSeconds) * stepSeconds;
-        System.out.println("Searching for coordinates at: " + zonedDateTime.withSecond(seconds));
         return satelliteLocationRepository.findSatelliteLocationByTime(zonedDateTime.withSecond(seconds));
     }
 
